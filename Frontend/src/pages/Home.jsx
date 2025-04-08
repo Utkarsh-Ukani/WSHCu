@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CategoryCard from "../components/CategoryCard";
 import { FaArrowRight, FaPercent, FaTruck, FaStar, FaClock, FaShoppingCart } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -12,6 +12,7 @@ const Home = () => {
   const [cartAnimation, setCartAnimation] = useState(null);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -120,6 +121,7 @@ const Home = () => {
                   className="bg-white hover:bg-gray-200 text-black font-bold py-3 px-6 rounded-full transition duration-300"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/products')}
                 >
                   Shop Now
                 </motion.button>
@@ -356,6 +358,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.6, duration: 0.6 }}
+                onClick={() => navigate('/products')}
               >
                 Shop Now
               </motion.button>

@@ -93,7 +93,7 @@ export default function Product() {
     const ratingValue = rating || 0;
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <span key={i} className={`text-sm ${i <= Math.round(ratingValue) ? 'text-yellow-500' : 'text-gray-300'}`}>
+        <span key={i} className={`text-lg ${i <= Math.round(ratingValue) ? 'text-yellow-500' : 'text-gray-300'}`}>
           ★
         </span>
       );
@@ -104,47 +104,34 @@ export default function Product() {
   // Loading spinner component
   const LoadingSpinner = () => (
     <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
     </div>
   );
 
   // Error message component
   const ErrorMessage = ({ message }) => (
-    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mx-auto my-4 max-w-lg">
+    <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg mx-auto my-6 max-w-lg shadow">
       <p>{message}</p>
     </div>
   );
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Our Products</h1>
-          <div className="flex items-center">
-            <button className="p-2 rounded-full hover:bg-gray-100 mr-2 lg:hidden" onClick={() => setMobileFilterOpen(!mobileFilterOpen)}>
-              <Filter size={20} />
-            </button>
-            <button className="p-2 rounded-full hover:bg-gray-100 mr-2" onClick={() => setIsGridView(!isGridView)}>
-              {isGridView ? <List size={20} /> : <Grid size={20} />}
-            </button>
-            <button className="p-2 rounded-full hover:bg-gray-100">
-              <ShoppingCart size={20} />
-            </button>
-          </div>
-        </div>
+    <div className="bg-gray-100 min-h-screen">
+      
 
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 ">
         <div className="flex flex-col lg:flex-row">
           {/* Category Sidebar (Desktop) */}
           <div className="hidden lg:block w-64 mr-8">
-            <div className="bg-white p-4 rounded-lg shadow">
-              <h2 className="text-lg font-semibold mb-4">Categories</h2>
-              <ul>
+            <div className="bg-white p-5 rounded-xl shadow-md sticky top-8">
+              <h2 className="text-xl font-semibold mb-5 text-gray-800 border-b pb-3">Categories</h2>
+              <ul className="space-y-1">
                 {categories.map((category) => (
-                  <li key={category} className="mb-2">
+                  <li key={category}>
                     <button
                       onClick={() => filterProductsByCategory(category)}
-                      className={`w-full text-left py-2 px-3 rounded-md ${
+                      className={`w-full text-left py-3 px-4 rounded-lg transition-all duration-200 ${
                         selectedCategory === category 
                           ? 'bg-blue-100 text-blue-800 font-medium' 
                           : 'hover:bg-gray-100'
@@ -160,15 +147,15 @@ export default function Product() {
 
           {/* Mobile Category Filter */}
           {mobileFilterOpen && (
-            <div className="lg:hidden w-full mb-4">
-              <div className="bg-white p-4 rounded-lg shadow">
-                <div className="flex justify-between items-center mb-2">
-                  <h2 className="text-lg font-semibold">Categories</h2>
-                  <button onClick={() => setMobileFilterOpen(false)} className="text-gray-500">
+            <div className="lg:hidden w-full mb-6">
+              <div className="bg-white p-5 rounded-xl shadow-md">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-gray-800">Categories</h2>
+                  <button onClick={() => setMobileFilterOpen(false)} className="text-gray-500 p-2 hover:bg-gray-100 rounded-full">
                     ✕
                   </button>
                 </div>
-                <div className="flex flex-wrap">
+                <div className="flex flex-wrap gap-2">
                   {categories.map((category) => (
                     <button
                       key={category}
@@ -176,9 +163,9 @@ export default function Product() {
                         filterProductsByCategory(category);
                         setMobileFilterOpen(false);
                       }}
-                      className={`mr-2 mb-2 py-1 px-3 rounded-full text-sm ${
+                      className={`py-2 px-4 rounded-full text-sm transition-all duration-200 ${
                         selectedCategory === category
-                          ? 'bg-blue-100 text-blue-800'
+                          ? 'bg-blue-100 text-blue-800 font-medium'
                           : 'bg-gray-100 hover:bg-gray-200'
                       }`}
                     >
@@ -193,9 +180,29 @@ export default function Product() {
           {/* Product Grid/List */}
           <div className="flex-1">
             {/* Current Category Display */}
-            <div className="mb-4 bg-white p-3 rounded-lg shadow">
-              <h2 className="text-xl font-medium text-gray-800">{selectedCategory}</h2>
-              <p className="text-gray-500 text-sm">{filteredProducts.length} products</p>
+            <div className="mb-6 bg-white p-5 rounded-xl shadow-md">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-semibold text-gray-800">{selectedCategory}</h2>
+                  <p className="text-gray-500">{filteredProducts.length} products found</p>
+                </div>
+                <div className="hidden md:block">
+                  <div className="bg-gray-100 rounded-lg p-1 inline-flex">
+                    <button 
+                      onClick={() => setIsGridView(true)}
+                      className={`p-2 rounded-lg ${isGridView ? 'bg-white shadow' : 'hover:bg-gray-200'}`}
+                    >
+                      <Grid size={18} />
+                    </button>
+                    <button 
+                      onClick={() => setIsGridView(false)}
+                      className={`p-2 rounded-lg ${!isGridView ? 'bg-white shadow' : 'hover:bg-gray-200'}`}
+                    >
+                      <List size={18} />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Error Message */}
@@ -208,45 +215,70 @@ export default function Product() {
               <>
                 {/* Products Display */}
                 {isGridView ? (
-                  // Grid View
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  // Grid View - with larger cards
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredProducts.map((product) => (
                       <div 
                         key={product._id} 
-                        className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                        className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer transform hover:-translate-y-1"
                         onClick={() => navigateToProductDetail(product._id)}
                       >
-                        <img 
-                          src={product.image || '/api/placeholder/200/200'} 
-                          alt={product.name} 
-                          className="w-full h-48 object-cover" 
-                          onError={(e) => {e.target.src = '/api/placeholder/200/200'}}
-                        />
-                        <div className="p-4">
-                          <h3 className="text-lg font-medium text-gray-900">{product.name}</h3>
-                          <p className="text-sm text-gray-500">{product.category?.name || 'Uncategorized'}</p>
-                          <div className="mt-2 flex items-center justify-between">
+                        <div className="relative">
+                          <img 
+                            src={product.image || '/api/placeholder/400/300'} 
+                            alt={product.name} 
+                            className="w-full h-64 object-cover" 
+                            onError={(e) => {e.target.src = '/api/placeholder/400/300'}}
+                          />
+                          {product.discountedPrice && (
+                            <div className="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                              SALE
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-6">
+                          <div className="flex justify-between items-start mb-2">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-1">{product.name}</h3>
+                            <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                              {product.category?.name || 'Uncategorized'}
+                            </span>
+                          </div>
+                          
+                          <div className="flex items-center mb-3">
+                            <StarRating rating={product.rating || 0} />
+                            <span className="text-gray-500 text-sm ml-2">({product.rating || 0})</span>
+                          </div>
+                          
+                          <p className="text-gray-600 mb-4 line-clamp-2 h-12">
+                            {product.description || 'No description available.'}
+                          </p>
+                          
+                          <div className="flex justify-between items-center">
                             <div>
                               {product.discountedPrice ? (
-                                <div className="flex flex-col">
-                                  <p className="text-lg font-bold text-gray-900">${product.discountedPrice.toFixed(2) || 'N/A'}</p>
-                                  <p className="text-sm text-gray-500 line-through">${product.price?.toFixed(2) || 'N/A'}</p>
+                                <div className="flex items-baseline">
+                                  <p className="text-2xl font-bold text-gray-900">₹{product.discountedPrice.toFixed(2) || 'N/A'}</p>
+                                  <p className="text-sm text-gray-500 line-through ml-2">₹{product.price?.toFixed(2) || 'N/A'}</p>
                                 </div>
                               ) : (
-                                <p className="text-lg font-bold text-gray-900">${product.price?.toFixed(2) || 'N/A'}</p>
+                                <p className="text-2xl font-bold text-gray-900">₹{product.price?.toFixed(2) || 'N/A'}</p>
                               )}
                             </div>
-                            <StarRating rating={product.rating || 0} />
+                            <div className="text-sm text-gray-500">
+                              {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                            </div>
                           </div>
+                          
                           {product.stock > 0 ? (
                             <button 
-                              className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+                              className="mt-5 w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center space-x-2"
                               onClick={(e) => addToCart(e, product)}
                             >
-                              Add to Cart
+                              <ShoppingCart size={18} />
+                              <span>Add to Cart</span>
                             </button>
                           ) : (
-                            <button className="mt-4 w-full bg-gray-300 text-gray-700 py-2 rounded-md cursor-not-allowed">
+                            <button className="mt-5 w-full bg-gray-300 text-gray-700 py-3 rounded-lg cursor-not-allowed font-medium">
                               Out of Stock
                             </button>
                           )}
@@ -256,58 +288,99 @@ export default function Product() {
                   </div>
                 ) : (
                   // List View
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     {filteredProducts.map((product) => (
                       <div 
                         key={product._id} 
-                        className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                        className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
                         onClick={() => navigateToProductDetail(product._id)}
                       >
-                        <div className="flex flex-col sm:flex-row">
-                          <img 
-                            src={product.image || '/api/placeholder/200/200'} 
-                            alt={product.name} 
-                            className="w-full sm:w-48 h-48 object-cover"
-                            onError={(e) => {e.target.src = '/api/placeholder/200/200'}}
-                          />
-                          <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div className="flex flex-col md:flex-row">
+                          <div className="relative md:w-1/3 lg:w-1/4">
+                            <img 
+                              src={product.image || '/api/placeholder/400/300'} 
+                              alt={product.name} 
+                              className="w-full h-64 md:h-full object-cover"
+                              onError={(e) => {e.target.src = '/api/placeholder/400/300'}}
+                            />
+                            {product.discountedPrice && (
+                              <div className="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                                SALE
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-6 flex-1 flex flex-col justify-between">
                             <div>
-                              <h3 className="text-lg font-medium text-gray-900">{product.name}</h3>
-                              <p className="text-sm text-gray-500">{product.category?.name || 'Uncategorized'}</p>
-                              <StarRating rating={product.rating || 0} />
-                              <p className="mt-2 text-gray-600">{product.description || 'No description available.'}</p>
+                              <div className="flex justify-between items-start mb-2">
+                                <h3 className="text-xl font-semibold text-gray-900">{product.name}</h3>
+                                <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                  {product.category?.name || 'Uncategorized'}
+                                </span>
+                              </div>
+                              
+                              <div className="flex items-center mb-3">
+                                <StarRating rating={product.rating || 0} />
+                                <span className="text-gray-500 text-sm ml-2">({product.rating || 0})</span>
+                              </div>
+                              
+                              <p className="text-gray-600 mb-4">
+                                {product.description || 'No description available.'}
+                              </p>
+                              
                               {product.quantity && (
-                                <p className="mt-1 text-sm text-gray-500">Quantity: {product.quantity}</p>
+                                <p className="text-sm text-gray-500 mb-2">Quantity: {product.quantity}</p>
                               )}
                             </div>
-                            <div className="mt-4 flex items-center justify-between">
+                            
+                            <div className="flex flex-wrap items-center justify-between mt-4 gap-4">
                               <div>
                                 {product.discountedPrice ? (
-                                  <div className="flex flex-col">
-                                    <p className="text-xl font-bold text-gray-900">${product.discountedPrice.toFixed(2) || 'N/A'}</p>
-                                    <p className="text-sm text-gray-500 line-through">${product.price?.toFixed(2) || 'N/A'}</p>
+                                  <div className="flex items-baseline">
+                                    <p className="text-2xl font-bold text-gray-900">₹{product.discountedPrice.toFixed(2) || 'N/A'}</p>
+                                    <p className="text-sm text-gray-500 line-through ml-2">₹{product.price?.toFixed(2) || 'N/A'}</p>
                                   </div>
                                 ) : (
-                                  <p className="text-xl font-bold text-gray-900">${product.price?.toFixed(2) || 'N/A'}</p>
+                                  <p className="text-2xl font-bold text-gray-900">₹{product.price?.toFixed(2) || 'N/A'}</p>
                                 )}
                               </div>
-                              {product.stock > 0 ? (
-                                <button 
-                                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                                  onClick={(e) => addToCart(e, product)}
-                                >
-                                  Add to Cart
-                                </button>
-                              ) : (
-                                <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md cursor-not-allowed">
-                                  Out of Stock
-                                </button>
-                              )}
+                              
+                              <div className="flex items-center space-x-4">
+                                <div className="text-sm text-gray-500">
+                                  {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                                </div>
+                                
+                                {product.stock > 0 ? (
+                                  <button 
+                                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center space-x-2"
+                                    onClick={(e) => addToCart(e, product)}
+                                  >
+                                    <ShoppingCart size={18} />
+                                    <span>Add to Cart</span>
+                                  </button>
+                                ) : (
+                                  <button className="bg-gray-300 text-gray-700 px-6 py-3 rounded-lg cursor-not-allowed font-medium">
+                                    Out of Stock
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {/* Empty state */}
+                {filteredProducts.length === 0 && !loading && !error && (
+                  <div className="bg-white rounded-xl shadow-md p-8 text-center">
+                    <div className="text-gray-400 mb-4">
+                      <ShoppingCart size={48} className="mx-auto" />
+                    </div>
+                    <h3 className="text-xl font-medium text-gray-800 mb-2">No products found</h3>
+                    <p className="text-gray-600">
+                      We couldn't find any products in this category. Try selecting a different category.
+                    </p>
                   </div>
                 )}
               </>

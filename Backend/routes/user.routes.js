@@ -1,23 +1,19 @@
 import express from 'express';
 import { deleteUser, getAllUsers, getUser, getUserById, login, logout, register, updateUser } from '../controllers/auth.controller.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
-import { isAdmin } from '../middlewares/isAdmin.middleware.js';
 
 const userRouter = express.Router();
 
-// Public routes
 userRouter.post('/register', register);
-userRouter.post('/login', login);
+userRouter.post('/login',login);
 
-// Protected routes
-userRouter.use(verifyJWT); // Apply JWT middleware to all routes below
-userRouter.post('/logout', logout);
-userRouter.get('/getuser', getUser);
-userRouter.put('/:id', updateUser);
-userRouter.delete('/:id', deleteUser);
+// secured routes
+userRouter.route('/logout').post(verifyJWT,logout);
+userRouter.route('/getuser').get(verifyJWT,getUser);
 
-// Admin only routes
-userRouter.get('/', isAdmin, getAllUsers);
-userRouter.get('/:id', isAdmin, getUserById);
+userRouter.get('/',getAllUsers);
+userRouter.get('/:id',getUserById);
+userRouter.put('/:id',verifyJWT,updateUser);
+userRouter.delete('/:id',verifyJWT,deleteUser);
 
 export default userRouter;

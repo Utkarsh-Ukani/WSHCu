@@ -7,11 +7,8 @@ import { isAdmin } from '../middlewares/isAdmin.middleware.js';
 
 const adminRouter = express.Router();
 
-// Apply JWT and admin middleware to all routes
-adminRouter.use(verifyJWT, isAdmin);
-
 // category routes
-adminRouter.post('/add-category', addCategory);
+adminRouter.post('/add-category',addCategory);
 adminRouter.get('/get-categories', getCategories);
 adminRouter.get('/get-category/:id', getCategoryById); 
 adminRouter.put('/update-category/:id', updateCategory); 
@@ -26,8 +23,8 @@ adminRouter.put('/update-product/:id', updateProduct);
 adminRouter.delete('/delete-product/:id', deleteProduct);
 
 // order routes
-adminRouter.get('/get-all-orders', getAllOrders);
-adminRouter.get('/orders/:userId', getUserOrdersByAdmin);
-adminRouter.put('/orders/:orderId', updateUserOrderStatusByAdmin);
+adminRouter.get('/get-all-orders',verifyJWT,isAdmin,getAllOrders);
+adminRouter.get('/orders/:userId',verifyJWT,isAdmin,getUserOrdersByAdmin); // Get orders by userId
+adminRouter.put('/orders/:orderId',verifyJWT,isAdmin,updateUserOrderStatusByAdmin); // Update order status
 
 export default adminRouter;

@@ -1,3 +1,4 @@
+import Cart from "../models/cart.model.js";
 import User from "../models/user.model.js";
 
 const options = {
@@ -66,10 +67,11 @@ export const register = async (req, res) => {
     }
 
     // Create new user
-    const newUser = await User.create({ name, email, password }).select("-password");
+    const newUser = await User.create({ name, email, password });
+    newUser.password = undefined;
 
     //  Create empty cart for new user
-    await Cart.create({ userId: newUser._id });
+    await Cart.create({ user: newUser._id });
 
     const token = newUser.generateToken(); // generate JWT token
 

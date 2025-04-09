@@ -21,7 +21,9 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
 
   // Get cart items count from Redux store
-  const cartItems = useSelector((state) => state.cart.items);
+  const cart = useSelector((state) => state.cart.cart); // cart could be null or an object
+  const cartItems = cart?.items || []; // safely get the array or default to []
+
   const cartItemCount = cartItems.reduce(
     (total, item) => total + item.quantity,
     0
@@ -155,7 +157,9 @@ const Navbar = () => {
           {/* Search Bar */}
           <form
             onSubmit={handleSearch}
-            className={`flex-1 relative ${isSearchFocused ? "scale-105" : ""} ml-8`}
+            className={`flex-1 relative ${
+              isSearchFocused ? "scale-105" : ""
+            } ml-8`}
           >
             <input
               type="text"

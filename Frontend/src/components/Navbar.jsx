@@ -8,7 +8,7 @@ import {
 } from "react-icons/fa";
 import { IoFastFood } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCategories } from "../store/slices/categorySlice";
+import { getCategories } from "../store/slices/categorySlice";
 import { getProfile, logout } from "../store/slices/authSlice";
 
 const Navbar = () => {
@@ -56,7 +56,7 @@ const Navbar = () => {
 
   // Fetch categories on component mount
   useEffect(() => {
-    dispatch(fetchCategories());
+    dispatch(getCategories());
   }, [dispatch]);
 
   // Debug categories when they change

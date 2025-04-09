@@ -1,85 +1,81 @@
 import { useState, useEffect } from 'react';
 import { Filter, ShoppingCart, Grid, List } from 'lucide-react';
-import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCategories } from '../store/slices/categorySlice';
+import { fetchProducts } from '../store/slices/productSlice';
+
 
 export default function Product() {
   const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const categoryFromUrl = queryParams.get('category') || 'All';
-
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  
+  // Redux state
+  const { categories } = useSelector((state) => state.categories);
+  const { products, loading, error } = useSelector((state) => state.products);
+  
+  // Local state
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
   const [isGridView, setIsGridView] = useState(true);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [categories, setCategories] = useState(['All']);
+  const [categoryNames, setCategoryNames] = useState(['All']);
 
+  // Get query parameters from URL - need to refresh when location changes
+  const queryParams = new URLSearchParams(location.search);
+  const categoryFromUrl = queryParams.get('category') || 'All';
+  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
+  
+  // Watch for URL/location changes and update selected category
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        // Fetch categories and products in parallel
-        const [categoriesResponse, productsResponse] = await Promise.all([
-          axios.get("http://localhost:5112/api/admin/get-categories"),
-          axios.get("http://localhost:5112/api/admin/get-products")
-        ]);
-        
-        // Process categories
-        const categoriesData = categoriesResponse.data.categories || [];
-        const categoryNames = categoriesData.map(category => category.name);
-        setCategories(['All', ...categoryNames]);
-        
-        // Process products
-        const productsData = productsResponse.data.products;
-        setProducts(productsData);
-        
-        // Apply initial category filter if present in URL
-        if (categoryFromUrl && categoryFromUrl !== 'All') {
-          setSelectedCategory(categoryFromUrl);
-          setFilteredProducts(productsData.filter(product => 
-            product.category && product.category.name === categoryFromUrl
-          ));
-        } else {
-          setSelectedCategory('All');
-          setFilteredProducts(productsData);
-        }
-        
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Failed to load data. Please try again later.");
-        setLoading(false);
+    const newCategoryFromUrl = new URLSearchParams(location.search).get('category') || 'All';
+    setSelectedCategory(newCategoryFromUrl);
+  }, [location]);
+
+  // Fetch data on component mount
+  useEffect(() => {
+    dispatch(getCategories());
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  // Process categories when they change
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      const names = categories.map(category => category.name);
+      setCategoryNames(['All', ...names]);
+    }
+  }, [categories]);
+
+  // Filter products when products array or selected category changes
+  useEffect(() => {
+    if (products && products.length > 0) {
+      if (selectedCategory && selectedCategory !== 'All') {
+        setFilteredProducts(products.filter(product => 
+          product.category && product.category.name === selectedCategory
+        ));
+      } else {
+        setFilteredProducts(products);
       }
-    };
-    
-    fetchData();
-  }, [categoryFromUrl]);
+    }
+  }, [products, selectedCategory]);
 
   // Update URL when category changes
   const filterProductsByCategory = (category) => {
     setSelectedCategory(category);
     if (category === 'All') {
       navigate('/products');
-      setFilteredProducts(products);
     } else {
       navigate(`/products?category=${encodeURIComponent(category)}`);
-      setFilteredProducts(products.filter(product => 
-        product.category && product.category.name === category
-      ));
     }
     setMobileFilterOpen(false);
   };
 
-  // Navigate to product detail page - using React Router
+  // Navigate to product detail page
   const navigateToProductDetail = (productId) => {
     navigate(`/products/${productId}`);
   };
 
-  // Add to cart function (separate from navigation)
+  // Add to cart function
   const addToCart = (e, product) => {
     e.stopPropagation(); // Prevent triggering card click event
     // Add cart functionality here
@@ -117,17 +113,15 @@ export default function Product() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      
-
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 ">
+      <main className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row">
           {/* Category Sidebar (Desktop) */}
           <div className="hidden lg:block w-64 mr-8">
             <div className="bg-white p-5 rounded-xl shadow-md sticky top-8">
               <h2 className="text-xl font-semibold mb-5 text-gray-800 border-b pb-3">Categories</h2>
               <ul className="space-y-1">
-                {categories.map((category) => (
+                {categoryNames.map((category) => (
                   <li key={category}>
                     <button
                       onClick={() => filterProductsByCategory(category)}
@@ -156,7 +150,7 @@ export default function Product() {
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
+                  {categoryNames.map((category) => (
                     <button
                       key={category}
                       onClick={() => {
@@ -203,6 +197,17 @@ export default function Product() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Filter Button (Mobile) */}
+            <div className="lg:hidden mb-6">
+              <button 
+                onClick={() => setMobileFilterOpen(true)}
+                className="w-full flex items-center justify-center bg-white py-3 rounded-xl shadow-md"
+              >
+                <Filter size={18} className="mr-2" />
+                <span>Filter Products</span>
+              </button>
             </div>
 
             {/* Error Message */}

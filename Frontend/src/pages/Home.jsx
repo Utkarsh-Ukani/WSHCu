@@ -4,15 +4,19 @@ import CategoryCard from "../components/CategoryCard";
 import { FaArrowRight, FaPercent, FaTruck, FaStar, FaClock, FaShoppingCart } from "react-icons/fa";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from "../store/slices/productSlice";
+import { getCategories } from "../store/slices/categorySlice";
 
 
 
 const Home = () => {
   const [isVisible, setIsVisible] = useState({});
   const [cartAnimation, setCartAnimation] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products.products);
+  const  categories = useSelector((state) => state.categories);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -40,29 +44,12 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get("http://localhost:5112/api/admin/get-categories");
-        setCategories(response.data.categories); // Axios stores response data here
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-  
-    fetchCategories();
-  }, []);
+    dispatch(getCategories());
+  }, [dispatch]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("http://localhost:5112/api/admin/get-products");
-        setProducts(response.data.products);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   console.log(products);
   
@@ -214,7 +201,7 @@ const Home = () => {
           initial="hidden"
           animate={isVisible["categories-section"] ? "visible" : "hidden"}
         >
-          {categories?.map((category) => (
+          {categories.categories?.map((category) => (
             <motion.div
               key={category._id}
               variants={fadeInUp}

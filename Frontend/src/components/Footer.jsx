@@ -16,7 +16,7 @@ const Footer = () => {
           <div className="flex flex-col">
             <Link to="/" className="flex items-center space-x-2 text-xl font-extrabold tracking-wider mb-4">
               <IoFastFood size={28} className="text-white" />
-              <span>FoodCart</span>
+              <span>WSH</span>
             </Link>
             <p className="text-gray-400 mb-4">
               Delivering delicious food to your doorstep. Fast, fresh, and always tasty.

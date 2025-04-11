@@ -5,6 +5,8 @@ import {
   FaUser,
   FaSearch,
   FaChevronDown,
+  FaInfoCircle,
+  FaEnvelope,
 } from "react-icons/fa";
 import { IoFastFood } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
@@ -89,6 +91,11 @@ const Navbar = () => {
   // Get current category from URL
   const queryParams = new URLSearchParams(location.search);
   const currentCategory = queryParams.get("category") || "All";
+
+  // Check if a link is active
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
 
   return (
     <nav className="bg-black text-white py-3 shadow-lg sticky top-0 z-50 transition-all duration-300 shadow-blue-900">
@@ -179,6 +186,24 @@ const Navbar = () => {
           </form>
         </div>
 
+        {/* Navigation Links including About and Contact */}
+        <div className="hidden md:flex items-center space-x-4 mr-4">
+          <Link 
+            to="/about" 
+            className={`flex items-center space-x-1 hover:text-blue-300 transition-colors duration-200 ${isActive('/about') ? 'text-blue-300 font-medium' : ''}`}
+          >
+            <FaInfoCircle size={16} />
+            <span>About</span>
+          </Link>
+          <Link 
+            to="/contact"
+            className={`flex items-center space-x-1 hover:text-blue-300 transition-colors duration-200 ${isActive('/contact') ? 'text-blue-300 font-medium' : ''}`}
+          >
+            <FaEnvelope size={16} />
+            <span>Contact</span>
+          </Link>
+        </div>
+
         <div className="flex items-center space-x-1 md:space-x-4">
           {isAuthenticated ? (
             <div className="ml-3 relative">
@@ -224,6 +249,24 @@ const Navbar = () => {
             )}
           </Link>
         </div>
+      </div>
+      
+      {/* Mobile Navigation for About and Contact - shown only on smaller screens */}
+      <div className="md:hidden flex justify-center mt-2 pb-1 space-x-6">
+        <Link 
+          to="/about" 
+          className={`flex items-center space-x-1 text-sm hover:text-blue-300 transition-colors duration-200 ${isActive('/about') ? 'text-blue-300 font-medium' : ''}`}
+        >
+          <FaInfoCircle size={14} />
+          <span>About</span>
+        </Link>
+        <Link 
+          to="/contact"
+          className={`flex items-center space-x-1 text-sm hover:text-blue-300 transition-colors duration-200 ${isActive('/contact') ? 'text-blue-300 font-medium' : ''}`}
+        >
+          <FaEnvelope size={14} />
+          <span>Contact</span>
+        </Link>
       </div>
     </nav>
   );

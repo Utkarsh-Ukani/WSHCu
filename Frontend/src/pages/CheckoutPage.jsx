@@ -1,11 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, CreditCard, Home, Package, Truck, ArrowRight, ArrowLeft, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCart } from '../store/slices/cartSlice';
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { cart } = useSelector((state) => state.cart);
   const [activeStep, setActiveStep] = useState(1);
+  const [products, setProducts] = useState([]);
+  
+  // Order summary calculation state
+  const [orderSummary, setOrderSummary] = useState({
+    subtotal: 0,
+    shipping: 15, // Default shipping cost
+    tax: 0,
+    total: 0
+  });
+
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (cart?.products) {
+      setProducts(cart.products);
+  
+      // Calculate subtotal and log each item
+      const subtotal = cart.products.reduce((sum, item, index) => {
+        console.log(`Item ${index}:`, item); // Debug log
+        const price = Number(item.product.price);
+        const quantity = Number(item.quantity);
+        return sum + (price * quantity);
+      }, 0);
+  
+      const shipping = orderSummary.shipping || 0;
+      const taxRate = 0.08; // 10% tax rate
+      const tax = subtotal * taxRate;
+      const total = subtotal + shipping + tax;
+  
+      setOrderSummary({
+        subtotal,
+        shipping,
+        tax,
+        total
+      });
+    }
+  }, [cart]);
+  
+  console.log(cart?.products?.[0]?.product); // Safe logging
+  
+
   const [formData, setFormData] = useState({
     // Contact Information
     email: '',
@@ -56,18 +103,6 @@ const Checkout = () => {
     }
   };
 
-  // Sample order summary data
-  const orderSummary = {
-    items: [
-      { id: 1, name: 'Premium T-Shirt', quantity: 2, price: 29.99 },
-      { id: 2, name: 'Designer Jeans', quantity: 1, price: 89.99 }
-    ],
-    subtotal: 149.97,
-    shipping: 5.99,
-    tax: 15.60,
-    total: 171.56
-  };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -103,15 +138,21 @@ const Checkout = () => {
           <div className="bg-[#6bbc51] bg-opacity-40 rounded p-6 backdrop-blur-sm">
             {/* Order Items */}
             <div className="space-y-4 mb-6">
-              {orderSummary.items.map(item => (
-                <div key={item.id} className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-gray-100">Qty: {item.quantity}</p>
+              {products && products.length > 0 ? (
+                products.map(item => (
+                  <div key={item.product._id} className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium">{item.product.name || item.product.title}</p>
+                      <p className="text-sm text-gray-100">Qty: {item.quantity}</p>
+                    </div>
+                    <p className="font-medium">₹{(item.product.price * item.quantity).toFixed(2)}</p>
                   </div>
-                  <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
+                ))
+              ) : (
+                <div className="text-center py-4">
+                  <p>Your cart is empty</p>
                 </div>
-              ))}
+              )}
             </div>
             
             {/* Divider */}
@@ -121,15 +162,15 @@ const Checkout = () => {
             <div className="space-y-2 mb-4">
               <div className="flex justify-between">
                 <p className="text-gray-100">Subtotal</p>
-                <p>${orderSummary.subtotal.toFixed(2)}</p>
+                <p>₹{orderSummary.subtotal.toFixed(2)}</p>
               </div>
               <div className="flex justify-between">
                 <p className="text-gray-100">Shipping</p>
-                <p>${orderSummary.shipping.toFixed(2)}</p>
+                <p>₹{orderSummary.shipping.toFixed(2)}</p>
               </div>
               <div className="flex justify-between">
                 <p className="text-gray-100">Tax</p>
-                <p>${orderSummary.tax.toFixed(2)}</p>
+                <p>₹{orderSummary.tax.toFixed(2)}</p>
               </div>
             </div>
             
@@ -139,7 +180,7 @@ const Checkout = () => {
             {/* Total */}
             <div className="flex justify-between font-bold text-lg">
               <p>Total</p>
-              <p>${orderSummary.total.toFixed(2)}</p>
+              <p>₹{orderSummary.total.toFixed(2)}</p>
             </div>
           </div>
         </motion.div>
@@ -468,23 +509,38 @@ const Checkout = () => {
                   <div className="block lg:hidden mb-6">
                     <h3 className="text-lg font-semibold mb-3">Order Summary</h3>
                     <div className="bg-gray-100 p-4 rounded">
-                      <div className="flex justify-between font-medium mb-2">
-                        <span>Subtotal</span>
-                        <span>${orderSummary.subtotal.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm text-gray-600 mb-2">
-                        <span>Shipping</span>
-                        <span>${orderSummary.shipping.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm text-gray-600 mb-2">
-                        <span>Tax</span>
-                        <span>${orderSummary.tax.toFixed(2)}</span>
-                      </div>
-                      <div className="border-t border-gray-300 my-2"></div>
-                      <div className="flex justify-between font-bold mt-2">
-                        <span>Total</span>
-                        <span>${orderSummary.total.toFixed(2)}</span>
-                      </div>
+                      {products && products.length > 0 ? (
+                        <>
+                          {products.map(item => (
+                            <div key={item._id} className="flex justify-between text-sm mb-2">
+                              <span>{item.product.name || item.product.title} (x{item.quantity})</span>
+                              <span>₹{(item.product.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                          ))}
+                          <div className="border-t border-gray-300 my-2"></div>
+                          <div className="flex justify-between font-medium mb-2">
+                            <span>Subtotal</span>
+                            <span>₹{orderSummary.subtotal.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between text-sm text-gray-600 mb-2">
+                            <span>Shipping</span>
+                            <span>₹{orderSummary.shipping.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between text-sm text-gray-600 mb-2">
+                            <span>Tax</span>
+                            <span>₹{orderSummary.tax.toFixed(2)}</span>
+                          </div>
+                          <div className="border-t border-gray-300 my-2"></div>
+                          <div className="flex justify-between font-bold mt-2">
+                            <span>Total</span>
+                            <span>₹{orderSummary.total.toFixed(2)}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-center py-2">
+                          <p>Your cart is empty</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

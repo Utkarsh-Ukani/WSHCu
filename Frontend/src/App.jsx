@@ -16,6 +16,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
 import AdminUsers from "./pages/AdminUsers";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/products" element={<Product />} />
         <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} /> 
         
         {/* Protected Routes */}
         <Route

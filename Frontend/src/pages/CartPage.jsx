@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { motion } from 'framer-motion';
 import { ArrowLeft, CreditCard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -29,8 +28,9 @@ const CartPage = () => {
     navigate(-1);
   };
 
-  const subtotal = cart?.items?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
-  const shipping = cart?.items?.length > 0 ? 15.0 : 0;
+  const subtotal =
+    cart?.products?.reduce((sum, item) => sum + item.product.price * item.quantity, 0) || 0;
+  const shipping = cart?.products?.length > 0 ? 15.0 : 0;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
@@ -67,7 +67,7 @@ const CartPage = () => {
             <span>Continue Shopping</span>
           </motion.button>
           <h2 className="text-2xl font-semibold text-center flex-grow">
-            Your Cart ({cart?.items?.length || 0})
+            Your Cart ({cart?.products?.length || 0})
           </h2>
           <div className="w-32"></div>
         </div>
@@ -83,11 +83,11 @@ const CartPage = () => {
             initial="hidden"
             animate="visible"
           >
-            {cart?.items?.length === 0 && (
+            {cart?.products?.length === 0 && (
               <p className="text-center text-gray-500 text-lg mt-8">Your cart is empty.</p>
             )}
 
-            {cart?.items?.map((item) => (
+            {cart?.products?.map((item) => (
               <motion.div
                 key={item._id}
                 className="bg-white rounded border border-gray-200 mb-4 p-6 flex items-center"
@@ -96,13 +96,17 @@ const CartPage = () => {
                 layout
               >
                 <div className="w-24 h-24 flex-shrink-0">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                  <img
+                    src={item.product.image}
+                    alt={item.product.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
 
                 <div className="ml-6 flex-grow">
-                  <h3 className="font-medium text-lg text-gray-900">{item.name}</h3>
+                  <h3 className="font-medium text-lg text-gray-900">{item.product.name}</h3>
                   <p className="text-gray-600 text-sm">
-                    Color: {item.color} | Size: {item.size}
+                    {item.product.description}
                   </p>
                 </div>
 
@@ -125,7 +129,7 @@ const CartPage = () => {
                 </div>
 
                 <div className="font-semibold text-lg mx-6 w-24 text-right">
-                  ₹{item.price.toFixed(2)}
+                  ₹{item.product.price.toFixed(2)}
                 </div>
 
                 <motion.button

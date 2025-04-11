@@ -133,14 +133,14 @@ export default function ProductDetail() {
               <div className="mb-6">
                 {product.discountedPrice ? (
                   <div className="flex items-center">
-                    <span className="text-3xl font-bold text-gray-900">${product.discountedPrice.toFixed(2)}</span>
-                    <span className="ml-2 text-lg text-gray-500 line-through">${product.price?.toFixed(2)}</span>
+                    <span className="text-3xl font-bold text-gray-900">₹{product.discountedPrice.toFixed(2)}</span>
+                    <span className="ml-2 text-lg text-gray-500 line-through">₹{product.price?.toFixed(2)}</span>
                     <span className="ml-2 bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
                       {Math.round(((product.price - product.discountedPrice) / product.price) * 100)}% OFF
                     </span>
                   </div>
                 ) : (
-                  <span className="text-3xl font-bold text-gray-900">${product.price?.toFixed(2) || 'N/A'}</span>
+                  <span className="text-3xl font-bold text-gray-900">₹{product.price?.toFixed(2) || 'N/A'}</span>
                 )}
                 <p className="text-green-600 mt-1">In Stock: {product.stock}</p>
               </div>
@@ -194,7 +194,7 @@ export default function ProductDetail() {
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <div className="flex items-center mb-3">
                   <Truck size={18} className="text-gray-600 mr-2" />
-                  <span className="text-sm text-gray-600">Free shipping on orders over $50</span>
+                  <span className="text-sm text-gray-600">Free shipping on orders over ₹200</span>
                 </div>
                 <div className="flex items-center">
                   <Shield size={18} className="text-gray-600 mr-2" />

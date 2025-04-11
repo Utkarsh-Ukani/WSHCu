@@ -149,7 +149,7 @@ const Home = () => {
           animate={isVisible["features-section"] ? "visible" : "hidden"}
         >
           {[
-            { icon: <FaTruck />, title: "Free Delivery", description: "On orders above $50" },
+            { icon: <FaTruck />, title: "Free Delivery", description: "On orders above ₹200" },
             { icon: <FaPercent />, title: "Weekly Deals", description: "Save up to 25%" },
             { icon: <FaStar />, title: "Quality Guarantee", description: "100% satisfaction" },
             { icon: <FaClock />, title: "24/7 Support", description: "Always here to help" }
@@ -189,7 +189,7 @@ const Home = () => {
             whileHover={{ x: 5 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <Link to="/categories" className="text-gray-700 hover:text-black flex items-center transition duration-300">
+            <Link to="/products" className="text-gray-700 hover:text-black flex items-center transition duration-300">
               View all <FaArrowRight className="ml-2" />
             </Link>
           </motion.div>

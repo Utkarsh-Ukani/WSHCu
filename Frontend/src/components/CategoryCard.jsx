@@ -1,10 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const CategoryCard = ({ id, name, description, image }) => {
+  const navigate = useNavigate();
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    navigate(`/products?category=${encodeURIComponent(name)}`);
+  };
+
   return (
-    <Link to={`/category/${id}`} className="block h-full">
+    <div onClick={handleClick} className="block h-full cursor-pointer">
       <motion.div 
         className="bg-white rounded-lg overflow-hidden shadow h-full flex flex-col"
         whileHover={{ y: -5 }}
@@ -44,7 +51,7 @@ const CategoryCard = ({ id, name, description, image }) => {
           </motion.div>
         </div>
       </motion.div>
-    </Link>
+    </div>
   );
 };
 

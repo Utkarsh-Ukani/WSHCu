@@ -7,15 +7,22 @@ import { FaShoppingCart } from 'react-icons/fa';
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   
-  const handleAddToCart = (e) => {
-    e.preventDefault();
-    dispatch(addToCart({
-      id: product._id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      quantity: 1
+  const handleAddToCart = (productId) => {
+    // Make sure productId is valid and not undefined
+    if (!productId) {
+      console.error("Product ID is missing");
+      return;
+    }
+    
+    // Ensure we're passing both required parameters
+    dispatch(addToCart({ 
+      productId: productId, 
+      quantity: 1 
     }));
+    
+    // Set animation state for the clicked product
+    setCartAnimation(productId);
+    setTimeout(() => setCartAnimation(null), 1000);
   };
   
   return (

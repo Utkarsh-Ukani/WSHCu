@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCategories } from '../store/slices/categorySlice';
 import { fetchProducts } from '../store/slices/productSlice';
+import { addToCart } from '../store/slices/cartSlice';
 
 
 export default function Product() {
@@ -76,11 +77,18 @@ export default function Product() {
   };
 
   // Add to cart function
-  const addToCart = (e, product) => {
-    e.stopPropagation(); // Prevent triggering card click event
-    // Add cart functionality here
-    console.log(`Added ${product.name} to cart`);
-    // You can implement cart API call here
+  const handleAddToCart = (productId) => {
+    // Make sure productId is valid and not undefined
+    if (!productId) {
+      console.error("Product ID is missing");
+      return;
+    }
+    
+    // Ensure we're passing both required parameters
+    dispatch(addToCart({ 
+      productId: productId, 
+      quantity: 1 
+    }));
   };
 
   // Star rating component
@@ -277,7 +285,10 @@ export default function Product() {
                           {product.stock > 0 ? (
                             <button 
                               className="mt-5 w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center space-x-2"
-                              onClick={(e) => addToCart(e, product)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddToCart(product._id)
+                              }}
                             >
                               <ShoppingCart size={18} />
                               <span>Add to Cart</span>
@@ -357,7 +368,10 @@ export default function Product() {
                                 {product.stock > 0 ? (
                                   <button 
                                     className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center space-x-2"
-                                    onClick={(e) => addToCart(e, product)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleAddToCart(product._id)
+                                    }}
                                   >
                                     <ShoppingCart size={18} />
                                     <span>Add to Cart</span>

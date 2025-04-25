@@ -54,7 +54,7 @@ const CartPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-gray-50 text-gray-900 px-32">
       <main className="container mx-auto px-4 py-8">
         <div className="flex items-center mb-8">
           <motion.button

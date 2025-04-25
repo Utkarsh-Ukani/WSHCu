@@ -7,6 +7,7 @@ import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from "../store/slices/productSlice";
 import { getCategories } from "../store/slices/categorySlice";
+import { addToCart } from "../store/slices/cartSlice";
 
 
 
@@ -17,6 +18,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products);
   const  categories = useSelector((state) => state.categories);
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -56,6 +58,19 @@ const Home = () => {
   console.log(categories);
   
   const handleAddToCart = (productId) => {
+    // Make sure productId is valid and not undefined
+    if (!productId) {
+      console.error("Product ID is missing");
+      return;
+    }
+    
+    // Ensure we're passing both required parameters
+    dispatch(addToCart({ 
+      productId: productId, 
+      quantity: 1 
+    }));
+    
+    // Set animation state for the clicked product
     setCartAnimation(productId);
     setTimeout(() => setCartAnimation(null), 1000);
   };
@@ -284,9 +299,9 @@ const Home = () => {
                     className="mt-3 w-full bg-black hover:bg-gray-800 text-white py-2 px-4 rounded transition duration-300 relative"
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => handleAddToCart(product.id)}
+                    onClick={() => handleAddToCart(product._id)}
                   >
-                    {cartAnimation === product.id ? (
+                    {cartAnimation === product._id ? (
                       <motion.span
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}

@@ -12,6 +12,7 @@ import { IoFastFood } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategories } from "../store/slices/categorySlice";
 import { getProfile, logout } from "../store/slices/authSlice";
+import { fetchCart } from "../store/slices/cartSlice";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -23,19 +24,26 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
 
   // Get cart items count from Redux store
-  const cart = useSelector((state) => state.cart.cart); // cart could be null or an object
-  const cartItems = cart?.items || []; // safely get the array or default to []
+  const { cart } = useSelector((state) => state.cart); // cart could be null or an object
+  const cartItems = cart?.products || []; // safely get the array or default to []
 
   const cartItemCount = cartItems.reduce(
     (total, item) => total + item.quantity,
     0
   );
+  
+  console.log(cart)
+  console.log(cartItemCount)
 
   // Get categories from Redux store
   const { categories, loading } = useSelector((state) => state.categories);
 
   // Get authentication state from Redux store
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+
+  useEffect(()=>{
+    dispatch(fetchCart())
+  },[dispatch])
 
   // Handle outside clicks for dropdown
   useEffect(() => {

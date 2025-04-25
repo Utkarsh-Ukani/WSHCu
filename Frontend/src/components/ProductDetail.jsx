@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // React Router hooks
 import { ChevronLeft, ShoppingCart, Star, Truck, Shield } from 'lucide-react';
+import { useDispatch } from 'react-redux'; // Import useDispatch
+import { addToCart } from '../store/slices/cartSlice'; // Import addToCart action
 import axios from 'axios';
 
 export default function ProductDetail() {
   const { id } = useParams(); // React Router useParams instead of router.query
   const navigate = useNavigate(); // React Router navigate
+  const dispatch = useDispatch(); // Add dispatch hook
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,9 +35,19 @@ export default function ProductDetail() {
   };
 
   const handleAddToCart = () => {
-    // Implement cart functionality here
+    // Make sure productId is valid and not undefined
+    if (!id) {
+      console.error("Product ID is missing");
+      return;
+    }
+    
+    // Ensure we're passing both required parameters
+    dispatch(addToCart({ 
+      productId: id, 
+      quantity: quantity 
+    }));
+    
     console.log(`Added ${quantity} of ${product?.name} to cart`);
-    // You can add API call to add to cart
   };
 
   const handleQuantityChange = (e) => {
